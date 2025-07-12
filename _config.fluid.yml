@@ -554,8 +554,8 @@ index:
 # Post Page
 #---------------------------
 post:
-  banner_img: /img/default.png
-  banner_img_height: 70
+  banner_img: /img/banner.jpg
+  banner_img_height: 50
   banner_mask_alpha: 0.3
 
   # 文章在首页的默认封面图，当没有指定 index_img 时会使用该图片，若两者都为空则不显示任何图片
@@ -975,8 +975,8 @@ tag:
 #---------------------------
 about:
   enable: true
-  banner_img: /img/default.png
-  banner_img_height: 60
+  banner_img: /img/banner.jpg
+  banner_img_height: 50
   banner_mask_alpha: 0.3
   avatar: /img/avatar.png
   name: "Fluid"

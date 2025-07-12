@@ -11,6 +11,8 @@ https://sifuen.com/writeups/intigiri-06250-by-tog-solution#bruteforcing-the-chro
 
 Thankful for such an amazing writeups 😁
 
+## **`Introduction of web-app`**
+
 If I give small introduction to the functionality of web-app so there is login page
 
 ![](/images/image.png)
@@ -102,6 +104,8 @@ def get_chrome_options(instance_id):
 
 •The `INSTANCE` cookie acts as an isolation mechanism. The `INSTANCE` cookie is used to determine which folder to store the Selenium Chrome Profile (the `--user-data-dir` argument) and where to store your uploaded notes. This isolates each challenge participant on the challenge server.
 
+## **`Path Traversal vulnerability`**
+
 Interestingly, the `is_valid_instance_id` function doesn't check whether the `instance_id` looks like a real UUID. Instead, it just checks if a folder exists at this path:
 
 ```
@@ -190,7 +194,7 @@ Then the final path the server writes to will be:
 
 Boom — we wrote to `/tmp/test`, even though we were supposed to be limited to `/app/instances/[your id]/notes/[username]/`.
 
-`ARBITRARY FILE WRITE`
+## **`ARBITRARY FILE WRITE`**
 
 let’s check that are we able to do this!!
 
@@ -479,6 +483,8 @@ Any website can send a request to this endpoint because:
 
 It’s detailed explanation here:
 
+### Basic payload
+
 The `ChromeDriver API` is pretty cool. Normally, ChromeDriver API is used through libraries like Selenium. If you dig around, you’ll discover that ChromeDriver has an endpoint called `/session`, which you can use to start a new Chrome browser session.
 
 For example, if ChromeDriver is running on port 50000, you can open a new Chrome window like this:
@@ -504,7 +510,7 @@ curl http://localhost:50000/session \
 
 A **new Chrome window** is launched with **default options**.
 
--x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-
+### RCE payload
 
 ```bash
 curl http://localhost:50000/session \
@@ -723,3 +729,5 @@ if __name__ == "__main__":
     time.sleep(8)
     reading_flag()
 ```
+
+Thanks for reading till the end :)
