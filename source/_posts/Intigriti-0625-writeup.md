@@ -379,7 +379,7 @@ With this we are able to execute js on chrome like XSS.
 
 That sounds nice but still no RCE!!
 
-## **`SELENIUM USAGE`-——-—-—-——-——————————**
+## **`SELENIUM USAGE`**
 
 After log in, a URL input box appears in the top right corner. Submitting a URL there triggers a call to the `/api/visit` endpoint.
 
