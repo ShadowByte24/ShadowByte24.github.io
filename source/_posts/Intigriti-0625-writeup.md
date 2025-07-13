@@ -313,8 +313,9 @@ Sounds overwhelming 😃 ?? Once again read the last para u will understand 😌
 
 Below [0] script will login and register through instance where we will exploit path traversal and [1] we will change the preference file of diff account and [2]use the instance id of that diff account u manually just normally create the account:
 
+## **`SCRIPT 1`**
+
 ```python
-------------script 1------------
 import requests
 import os
 import json
@@ -579,8 +580,9 @@ Why this range (32768-60999) explained here : https://book.jorianwoltjer.com/web
 
 Looping the ports and adding binary and ARGS to exfiltarte the flag.
 
+## **`SCRIPT 2`**
+
 ```python
------------script 2-------------
 # csrf to rce chromeDriver payload
 <html>
 <body>
@@ -626,6 +628,7 @@ Looping the ports and adding binary and ARGS to exfiltarte the flag.
 ## **`Full attack script`**
 
 u will have to host the script 2 on webhook and write your webhook site in place of dummy [webhook.site](http://webhook.site) url and u will get the flag on the terminal
+and this is according to if you solve locally if u solve on the challenge server in the paths change HOST to challenge server link.
 
 ```python
 import requests
